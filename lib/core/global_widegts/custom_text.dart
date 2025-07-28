@@ -29,6 +29,34 @@ Widget headingText({
   );
 }
 
+Widget headingTextv2({
+  required String text,
+  FontWeight fontWeight = FontWeight.bold,
+  Color color = Colors.black,
+  TextAlign textAlign = TextAlign.start,
+  int maxLines = 1,
+  TextOverflow overflow = TextOverflow.ellipsis,
+}) {
+  return Builder(
+    builder: (context) => MediaQuery(
+      data: MediaQuery.of(
+        context,
+      ).copyWith(textScaler: TextScaler.linear(1.0)),
+      child: Text(
+        text,
+        textAlign: textAlign,
+        maxLines: maxLines,
+        overflow: overflow,
+        style: TextStyle(
+          color: color,
+          fontSize: 30.sp,
+          fontWeight: fontWeight,
+        ),
+      ),
+    ),
+  );
+}
+
 Widget normalText({
   required String text,
   FontWeight fontWeight = FontWeight.normal,

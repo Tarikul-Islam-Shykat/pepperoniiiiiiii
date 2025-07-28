@@ -9,6 +9,7 @@ import 'package:prettyrini/feature/auth/screen/otp_very_screen.dart';
 import 'package:prettyrini/feature/auth/screen/sign_up_screen.dart';
 import 'package:prettyrini/feature/dashboard/ui/dashboard.dart';
 import 'package:prettyrini/feature/diagnosis/ui/camera_screen.dart';
+import 'package:prettyrini/feature/diagnosis_v2/ui/diagnosis_image_selection.dart';
 import 'package:prettyrini/feature/forum/ui/forum_screen_ui.dart';
 import 'package:prettyrini/feature/news/ui/tips_ui.dart';
 import 'package:prettyrini/feature/post/ui/post_ui.dart';
@@ -60,12 +61,14 @@ class MyApp extends StatelessWidget {
         //   home: SignUpScreen(),
         // home: OtpVeryScreen(),h
         // home: EmailVerification(),
-        home: ShopScreen(),
+        // home: ShopScreen(),
+        // home: HomeScreen(),
         //  home: CameraScreen(),
         // home: ProfileScreen(),
-        //   home: NewsUi(),
+        //  home: NewsUi(),
         // home: ForumScreen(),
         // home: SalesBoardScreen(),
+        home: ImageSelectionScreen(),
       ),
     );
   }

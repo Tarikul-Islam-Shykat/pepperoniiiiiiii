@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:prettyrini/core/global_widegts/custom_text.dart';
+import 'package:prettyrini/core/global_widegts/loading_screen.dart';
 import 'package:prettyrini/feature/dashboard/controller/product_controller.dart';
+import 'package:prettyrini/feature/news/controller/tips_controller.dart';
+import 'package:prettyrini/feature/news/widget/tips_card_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
+  final NewsController controller2 = Get.put(NewsController());
 
   HomeScreen({Key? key}) : super(key: key);
 
@@ -33,6 +37,7 @@ class HomeScreen extends StatelessWidget {
                 _buildPopularProduct(),
                 SizedBox(height: 20.h),
                 _buildTopNews(),
+                _buildTipsList(controller2)
               ],
             ),
           );
@@ -41,14 +46,50 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildTipsList(NewsController controller) {
+    return Obx(() {
+      if (controller.isLoading) {
+        return Center(child: loading());
+      }
+
+      if (controller.filteredCards.isEmpty) {
+        return const Padding(
+          padding: EdgeInsets.all(50.0),
+          child: Text(
+            'No news found',
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.grey,
+            ),
+          ),
+        );
+      }
+
+      return Padding(
+        padding: const EdgeInsets.all(0),
+        child: Column(
+          children: controller.filteredCards
+              .map((card) => Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: TipsCardWidget(
+                      card: card,
+                      controller: controller,
+                    ),
+                  ))
+              .toList(),
+        ),
+      );
+    });
+  }
+
   Widget _buildHeader() {
     return Row(
       children: [
         CircleAvatar(
           radius: 24.r,
           backgroundImage: NetworkImage(
-            controller.userProfile.value?.imageUrl ?? 
-            'https://randomuser.me/api/portraits/women/1.jpg',
+            controller.userProfile.value?.imageUrl ??
+                'https://randomuser.me/api/portraits/women/1.jpg',
           ),
         ),
         SizedBox(width: 12.w),
@@ -99,7 +140,6 @@ class HomeScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         normalText(text: 'Today Weather', fontWeight: FontWeight.w600),
-        SizedBox(height: 12.h),
         Container(
           padding: EdgeInsets.all(20.w),
           decoration: BoxDecoration(
@@ -116,18 +156,18 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    headingText(
+                    headingTextv2(
                       text: '${controller.weather.value?.temperature.toInt()}°',
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                     smallText(
                       text: controller.weather.value?.date ?? '20 March',
-                      color: Colors.white70,
+                      color: Colors.white,
                     ),
                     SizedBox(height: 16.h),
-                    smallText(text: 'Current Location', color: Colors.white70),
-                    normalText(
+                    smallText(text: 'Current Location', color: Colors.white),
+                    headingTextv2(
                       text: controller.weather.value?.location ?? 'Dhaka',
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -270,94 +310,6 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         SizedBox(height: 12.h),
-        SizedBox(
-          height: 200.h,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: controller.newsList.length,
-            itemBuilder: (context, index) {
-              final news = controller.newsList[index];
-              return Container(
-                width: 280.w,
-                margin: EdgeInsets.only(right: 16.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.r),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.network(
-                        news.imageUrl,
-                        fit: BoxFit.cover,
-                      ),
-                      // Gradient overlay for fading effect
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.transparent,
-                              Colors.black.withOpacity(0.7),
-                            ],
-                            stops: const [0.5, 1.0],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 16.h,
-                        left: 16.w,
-                        right: 16.w,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            normalText(
-                              text: news.title,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              maxLines: 2,
-                            ),
-                            SizedBox(height: 4.h),
-                            smallText(
-                              text: news.description,
-                              color: Colors.white70,
-                              maxLines: 2,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        top: 16.h,
-                        right: 16.w,
-                        child: Container(
-                          padding: EdgeInsets.all(8.w),
-                          decoration: BoxDecoration(
-                            color: Colors.black26,
-                            borderRadius: BorderRadius.circular(20.r),
-                          ),
-                          child: Icon(
-                            Icons.bookmark_border,
-                            color: Colors.white,
-                            size: 20.sp,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
       ],
     );
   }
