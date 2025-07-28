@@ -4,6 +4,8 @@ class Urls {
   static const String signUp = '$baseUrl/users';
   static const String getProfile = '$baseUrl/users/profile';
   static const String getNews = '$baseUrl/news?';
+  static const String getProduct = '$baseUrl/product';
+  static const String addToCart = '$baseUrl/cart';
 
   static const String setupProfile = '$baseUrl/users/update-profile';
   static const String authentication = '$baseUrl/auth/verify-auth';

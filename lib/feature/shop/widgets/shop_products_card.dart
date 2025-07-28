@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:prettyrini/core/global_widegts/custom_text.dart';
+import 'package:prettyrini/core/const/app_colors.dart';
 import 'package:prettyrini/feature/shop/model/product_data_model.dart';
-
 
 class ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback onTap;
+  final double? width; // Add optional width parameter
+  final double? height; // Add optional height parameter
 
   const ProductCard({
     Key? key,
     required this.product,
     required this.onTap,
+    this.width,
+    this.height,
   }) : super(key: key);
 
   @override
@@ -20,7 +23,8 @@ class ProductCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 160.w,
+        width: width ?? 160.w, // Default width for horizontal lists
+        height: height, // Let height be flexible unless specified
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12.r),
@@ -38,72 +42,54 @@ class ProductCard extends StatelessWidget {
           children: [
             // Product Image
             Container(
-              height: 120.h,
               width: double.infinity,
+              height: 120.h, // Fixed height for image container
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
                 color: Colors.grey.shade100,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12.r),
-                  topRight: Radius.circular(12.r),
-                ),
               ),
-              child: Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12.r),
-                      topRight: Radius.circular(12.r),
-                    ),
-                    child: CachedNetworkImage(
-                      imageUrl: product.image,
-                      width: double.infinity,
-                      height: 120.h,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Center(
-                        child: CircularProgressIndicator(
-                          color: const Color(0xff008080),
-                          strokeWidth: 2,
+              child: product.hasImages
+                  ? ClipRRect(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(12.r)),
+                      child: CachedNetworkImage(
+                        imageUrl: product.primaryImage,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: Colors.grey.shade200,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: Colors.grey.shade200,
+                          child: Icon(
+                            Icons.image_not_supported,
+                            color: Colors.grey.shade400,
+                            size: 40.sp,
+                          ),
                         ),
                       ),
-                      errorWidget: (context, url, error) => Center(
-                        child: Icon(
-                          Icons.image_not_supported,
-                          color: Colors.grey,
-                          size: 30.sp,
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Rating Badge
-                  Positioned(
-                    top: 8.h,
-                    right: 8.w,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                    )
+                  : Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xff008080),
-                        borderRadius: BorderRadius.circular(8.r),
+                        color: Colors.grey.shade200,
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(12.r)),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: Colors.white,
-                            size: 10.sp,
-                          ),
-                          SizedBox(width: 2.w),
-                          smallText(
-                            text: product.rating.toString(),
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ],
+                      child: Center(
+                        child: Icon(
+                          Icons.image,
+                          color: Colors.grey.shade400,
+                          size: 40.sp,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
             ),
 
             // Product Details
@@ -114,31 +100,53 @@ class ProductCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // Product Name
+                    Text(
+                      product.name,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+
+                    // Rating and Price Row
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Product Name
-                        normalText(
-                          text: product.name,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          maxLines: 2,
-                        ),
-                        SizedBox(height: 4.h),
-                        
-                        // Weight
-                        smallText(
-                          text: product.weight,
-                          color: Colors.grey,
+                        // Rating
+                        // Row(
+                        //   children: [
+                        //     Icon(
+                        //       Icons.star,
+                        //       color: Colors.amber,
+                        //       size: 14.sp,
+                        //     ),
+                        //     SizedBox(width: 4.w),
+                        //     Text(
+                        //       product.avgRating.toStringAsFixed(1),
+                        //       style: TextStyle(
+                        //         fontSize: 12.sp,
+                        //         color: Colors.grey.shade600,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+
+                        // SizedBox(height: 4.h),
+
+                        // Price
+                        Text(
+                          '\$${product.price.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryColor,
+                          ),
                         ),
                       ],
-                    ),
-
-                    // Price
-                    normalText(
-                      text: "\$${product.price.toStringAsFixed(2)}",
-                      color: const Color(0xff008080),
-                      fontWeight: FontWeight.bold,
                     ),
                   ],
                 ),

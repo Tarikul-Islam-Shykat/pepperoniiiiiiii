@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -28,7 +30,7 @@ class ShopScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(20.r),
           ),
           child: TextField(
-            onChanged: (value) => controller.searchProducts(value),
+            //onChanged: (value) => controller.searchProducts(value),
             decoration: InputDecoration(
               hintText: "I am looking for",
               hintStyle: TextStyle(fontSize: 14.sp, color: Colors.grey),
@@ -59,7 +61,7 @@ class ShopScreen extends StatelessWidget {
               SizedBox(height: 24.h),
 
               // New Products Section
-              _buildNewProductsSection(),
+              //     _buildNewProductsSection(),
             ],
           ),
         );
@@ -104,13 +106,13 @@ class ShopScreen extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            headingText(text: "Top Selling", color: Colors.black),
+            headingText(text: "All Products", color: Colors.black),
             GestureDetector(
               onTap: () {
                 // Navigate to see all top selling products
-                controller.filteredProducts.value =
-                    controller.topSellingProducts;
-                Get.to(() => ProductListScreen(title: "Top Selling"));
+                // controller.filteredProducts.value =
+                //     controller.topSellingProducts;
+                // Get.to(() => ProductListScreen(title: "Top Selling"));
               },
               child: smallText(
                 text: "See all",
@@ -122,7 +124,7 @@ class ShopScreen extends StatelessWidget {
         ),
         SizedBox(height: 16.h),
         SizedBox(
-          height: 280.h,
+          height: 200.h,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: controller.topSellingProducts.length,
@@ -133,6 +135,7 @@ class ShopScreen extends StatelessWidget {
                 child: ProductCard(
                   product: product,
                   onTap: () {
+                    //log("message ${product.id}");
                     Get.to(() => ProductDetailScreen(productId: product.id));
                   },
                 ),
@@ -179,7 +182,7 @@ class ShopScreen extends StatelessWidget {
                 child: ProductCard(
                   product: product,
                   onTap: () {
-                    Get.to(() => ProductDetailScreen(productId: product.id));
+                    //  Get.to(() => ProductDetailScreen(productId: product.id));
                   },
                 ),
               );

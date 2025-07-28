@@ -40,6 +40,8 @@ class NetworkConfig {
               await http.post(Uri.parse(url), headers: header, body: json_body);
 
           print(req.body);
+          print(json_body);
+
           if (req.statusCode == 200) {
             return json.decode(req.body);
           } else if (req.statusCode == 500) {

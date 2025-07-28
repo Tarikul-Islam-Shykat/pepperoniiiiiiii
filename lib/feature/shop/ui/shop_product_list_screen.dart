@@ -6,7 +6,6 @@ import 'package:prettyrini/feature/shop/controller/shop_controller.dart';
 import 'package:prettyrini/feature/shop/ui/shop_product_details_screen.dart';
 import 'package:prettyrini/feature/shop/widgets/shop_products_card.dart';
 
-
 class ProductListScreen extends StatelessWidget {
   final String? title;
   final ProductController controller = Get.find<ProductController>();
@@ -44,17 +43,18 @@ class ProductListScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(20.r),
             ),
             child: TextField(
-              onChanged: (value) => controller.searchProducts(value),
+              //    onChanged: (value) => controller.searchProducts(value),
               decoration: InputDecoration(
                 hintText: "Search products...",
                 hintStyle: TextStyle(fontSize: 14.sp, color: Colors.grey),
                 prefixIcon: Icon(Icons.search, color: Colors.grey, size: 20.sp),
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
               ),
             ),
           ),
-          
+
           // Products Grid
           Expanded(
             child: Obx(() {
@@ -96,7 +96,7 @@ class ProductListScreen extends StatelessWidget {
                   return ProductCard(
                     product: product,
                     onTap: () {
-                      Get.to(() => ProductDetailScreen(productId: product.id));
+                      //   Get.to(() => ProductDetailScreen(productId: product.id));
                     },
                   );
                 },

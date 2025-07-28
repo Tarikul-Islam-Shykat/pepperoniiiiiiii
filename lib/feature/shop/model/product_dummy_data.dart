@@ -30,7 +30,7 @@ class DummyData {
               "https://s.alicdn.com/@sc04/kf/Hebc09c7c96b4487dbe7ba58794df1b4bL/Free-Range-Broiler-Farming-Equipment-Dubai-Broiler-Farm-Chicken-Coop-for-Sale-Cages-for-Day-Old-Broiler-Chicks.jpg_300x300.jpg"),
     ];
   }
-
+/*
   static List<Product> getProducts() {
     return [
       // Top Selling Products
@@ -173,4 +173,5 @@ class DummyData {
       "products": getProducts().map((product) => product.toJson()).toList(),
     };
   }
+*/
 }

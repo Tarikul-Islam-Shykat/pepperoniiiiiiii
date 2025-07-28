@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:prettyrini/core/controller/theme_controller.dart';
+import 'package:prettyrini/feature/cart/ui/cart_ui.dart';
 import 'package:prettyrini/feature/shop/ui/shop_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/const/app_colors.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
         //   home: SignUpScreen(),
         // home: OtpVeryScreen(),h
         // home: EmailVerification(),
-        home: ShopScreen(),
+        // home: ShopScreen(),
         // home: HomeScreen(),
         //  home: CameraScreen(),
         // home: ProfileScreen(),
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
         // home: ForumScreen(),
         // home: SalesBoardScreen(),
         //    home: ImageSelectionScreen(),
+        home: CartScreen(),
       ),
     );
   }
