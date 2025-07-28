@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prettyrini/core/global_widegts/custom_text.dart';
+import 'package:prettyrini/core/global_widegts/loading_screen.dart';
 import 'package:prettyrini/feature/auth/controller/email_verification_controller.dart';
-import 'package:prettyrini/feature/auth/controller/signup_controller.dart';
 import 'package:prettyrini/feature/auth/widget/custom_booton_widget.dart';
 import 'package:prettyrini/feature/auth/widget/text_field_widget.dart';
 import '../../../core/const/app_colors.dart';
@@ -15,7 +15,6 @@ class EmailVerification extends StatelessWidget {
   EmailVerification({super.key});
   final EmailVerificationController controller =
       Get.put(EmailVerificationController());
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,9 +56,9 @@ class EmailVerification extends StatelessWidget {
             SizedBox(
               height: 15.h,
             ),
-            normalText(
-              text: 'Email',
-            ),
+            Obx(() => normalText(
+                  text: 'Email ${controller.isForgetPasswordLoading.value}',
+                )),
             SizedBox(
               height: 5.h,
             ),
@@ -73,15 +72,17 @@ class EmailVerification extends StatelessWidget {
             SizedBox(
               height: 20.h,
             ),
-            CustomButton(
-              onTap: () {},
-              title: Text(
-                "Send Email",
-                style:
-                    GoogleFonts.poppins(fontSize: 16.sp, color: Colors.white),
-              ),
-              color: AppColors.primaryColor,
-            ),
+            Obx(() => controller.isForgetPasswordLoading.value
+                ? loading()
+                : CustomButton(
+                    onTap: controller.forgetPassword,
+                    title: Text(
+                      "Send Email",
+                      style: GoogleFonts.poppins(
+                          fontSize: 16.sp, color: Colors.white),
+                    ),
+                    color: AppColors.primaryColor,
+                  )),
           ],
         ),
       ),
