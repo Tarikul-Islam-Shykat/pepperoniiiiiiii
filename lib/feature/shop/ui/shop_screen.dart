@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:prettyrini/core/const/app_colors.dart';
 import 'package:prettyrini/core/global_widegts/custom_text.dart';
 import 'package:prettyrini/feature/shop/controller/shop_controller.dart';
 import 'package:prettyrini/feature/shop/ui/shop_product_details_screen.dart';
 import 'package:prettyrini/feature/shop/ui/shop_product_list_screen.dart';
 import 'package:prettyrini/feature/shop/widgets/categoru_card.dart';
 import 'package:prettyrini/feature/shop/widgets/shop_products_card.dart';
-
 
 class ShopScreen extends StatelessWidget {
   final ProductController controller = Get.put(ProductController());
@@ -17,7 +17,7 @@ class ShopScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.bgColor,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -34,7 +34,8 @@ class ShopScreen extends StatelessWidget {
               hintStyle: TextStyle(fontSize: 14.sp, color: Colors.grey),
               prefixIcon: Icon(Icons.search, color: Colors.grey, size: 20.sp),
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
             ),
           ),
         ),
@@ -52,11 +53,11 @@ class ShopScreen extends StatelessWidget {
               // Categories Section
               _buildCategoriesSection(),
               SizedBox(height: 24.h),
-              
+
               // Top Selling Section
               _buildTopSellingSection(),
               SizedBox(height: 24.h),
-              
+
               // New Products Section
               _buildNewProductsSection(),
             ],
@@ -107,7 +108,8 @@ class ShopScreen extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 // Navigate to see all top selling products
-                controller.filteredProducts.value = controller.topSellingProducts;
+                controller.filteredProducts.value =
+                    controller.topSellingProducts;
                 Get.to(() => ProductListScreen(title: "Top Selling"));
               },
               child: smallText(

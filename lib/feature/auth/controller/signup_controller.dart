@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'dart:developer';
 //import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:prettyrini/core/global_widegts/app_snackbar.dart';
+import 'package:prettyrini/core/network_caller/network_config.dart';
+import 'package:prettyrini/core/services_class/local/user_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/network_caller/endpoints.dart';
@@ -15,6 +19,7 @@ class SignupController extends GetxController {
   final TextEditingController passwordTEController = TextEditingController();
   final TextEditingController confirmPasswordTEController =
       TextEditingController();
+  final NetworkConfig _networkConfig = NetworkConfig();
 
   // Password visibility states
   final isPasswordVisible = false.obs;
@@ -104,61 +109,107 @@ class SignupController extends GetxController {
     return true;
   }
 
-  // Handle signup
-  Future<void> handleSignUp() async {
-    if (!_validateFields()) return;
+  final isSignInLoading = false.obs;
+
+  Future<bool> handleSignUp() async {
+    if (emailTEController.text.isEmpty || passwordTEController.text.isEmpty) {
+      AppSnackbar.show(message: 'Please fill all fields', isSuccess: false);
+      return false;
+    }
 
     try {
-      isLoading.value = true;
-      final response = await http.post(
-        Uri.parse(Urls.authentication), // Make sure you have signup endpoint
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'firstName': firstNameTEController.text,
-          'lastName': lastNameTEController.text,
-          'email': emailTEController.text,
-          'password': passwordTEController.text,
-          'fcmToken': fcmToken ?? "",
-        }),
+      isSignInLoading.value = true;
+      final Map<String, dynamic> requestBody = {
+        "fullName":
+            "${firstNameTEController.text} ${lastNameTEController.text}",
+        "email": emailTEController.text,
+        "password": passwordTEController.text,
+      };
+      final response = await _networkConfig.ApiRequestHandler(
+        RequestMethod.POST,
+        Urls.signUp,
+        json.encode(requestBody),
+        is_auth: false,
       );
+      log("melon@gmail.com"); ////...
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = jsonDecode(response.body);
+      log("message 2 ${response.toString()}");
 
-        Get.snackbar(
-          'Success',
-          'Account created successfully!',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
-
-        // Clear form fields
-        _clearFields();
-
-        // Navigate to login screen or home
-        // Get.offNamed('/login');
+      if (response != null && response['success'] == true) {
+        // var localService = LocalService();
+        // await localService.clearUserData();
+        // await localService.setToken(response["data"]["token"]);
+        // await localService.setRole(response["data"]["role"]);
+        // String role = await localService.getRole();
+        AppSnackbar.show(message: "Registration Successful", isSuccess: true);
+        return true;
       } else {
-        final errorData = jsonDecode(response.body);
-        Get.snackbar(
-          'Error',
-          errorData['message'] ?? 'Registration failed. Please try again.',
-          snackPosition: SnackPosition.TOP,
-        );
+        AppSnackbar.show(message: response['message'], isSuccess: false);
+        return false;
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Something went wrong. Please check your connection.',
-        snackPosition: SnackPosition.TOP,
-      );
-      if (kDebugMode) {
-        print('Signup error: $e');
-      }
+      AppSnackbar.show(message: "Failed To Login $e", isSuccess: false);
+      return false;
     } finally {
-      isLoading.value = false;
+      isSignInLoading.value = false;
     }
   }
+
+  // Handle signup
+  // Future<void> handleSignUp() async {
+  //   if (!_validateFields()) return;
+
+  //   try {
+  //     isLoading.value = true;
+  //     final response = await http.post(
+  //       Uri.parse(Urls.authentication), // Make sure you have signup endpoint
+  //       headers: {'Content-Type': 'application/json'},
+  //       body: jsonEncode({
+  //         'firstName': firstNameTEController.text,
+  //         'lastName': lastNameTEController.text,
+  //         'email': emailTEController.text,
+  //         'password': passwordTEController.text,
+  //         'fcmToken': fcmToken ?? "",
+  //       }),
+  //     );
+
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       final data = jsonDecode(response.body);
+
+  //       Get.snackbar(
+  //         'Success',
+  //         'Account created successfully!',
+  //         snackPosition: SnackPosition.TOP,
+  //         backgroundColor: Colors.green,
+  //         colorText: Colors.white,
+  //       );
+
+  //       // Clear form fields
+  //       _clearFields();
+
+  //       // Navigate to login screen or home
+  //       // Get.offNamed('/login');
+  //     } else {
+  //       final errorData = jsonDecode(response.body);
+  //       Get.snackbar(
+  //         'Error',
+  //         errorData['message'] ?? 'Registration failed. Please try again.',
+  //         snackPosition: SnackPosition.TOP,
+  //       );
+  //     }
+  //   } catch (e) {
+  //     Get.snackbar(
+  //       'Error',
+  //       'Something went wrong. Please check your connection.',
+  //       snackPosition: SnackPosition.TOP,
+  //     );
+  //     if (kDebugMode) {
+  //       print('Signup error: $e');
+  //     }
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   // Clear all form fields
   void _clearFields() {

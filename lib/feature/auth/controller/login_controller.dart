@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'dart:developer';
 //import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:prettyrini/core/global_widegts/app_snackbar.dart';
+import 'package:prettyrini/core/network_caller/network_config.dart';
+import 'package:prettyrini/core/services_class/local/user_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/network_caller/endpoints.dart';
@@ -11,7 +15,8 @@ import '../../../core/network_caller/endpoints.dart';
 class LoginController extends GetxController {
   final TextEditingController emailTEController = TextEditingController();
   final TextEditingController passwordTEController = TextEditingController();
-  
+  final NetworkConfig _networkConfig = NetworkConfig();
+
   // Password visibility state
   final isPasswordVisible = false.obs;
   final isLoading = false.obs;
@@ -61,7 +66,7 @@ class LoginController extends GetxController {
       );
       return false;
     }
-    
+
     if (!GetUtils.isEmail(emailTEController.text)) {
       Get.snackbar(
         'Error',
@@ -72,7 +77,7 @@ class LoginController extends GetxController {
       );
       return false;
     }
-    
+
     if (passwordTEController.text.isEmpty) {
       Get.snackbar(
         'Error',
@@ -83,7 +88,7 @@ class LoginController extends GetxController {
       );
       return false;
     }
-    
+
     if (passwordTEController.text.length < 6) {
       Get.snackbar(
         'Error',
@@ -94,112 +99,53 @@ class LoginController extends GetxController {
       );
       return false;
     }
-    
+
     return true;
   }
 
   // Handle login
-  Future<void> handleLogin() async {
-    if (!_validateLoginForm()) return;
+  final isLoginLoading = false.obs;
 
+  Future<bool> loginUser() async {
+    if (emailTEController.text.isEmpty || passwordTEController.text.isEmpty) {
+      AppSnackbar.show(message: 'Please fill all fields', isSuccess: false);
+      return false;
+    }
     try {
-      isLoading.value = true;
-      final response = await http.post(
-        Uri.parse(Urls.login),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': emailTEController.text.trim(),
-          'password': passwordTEController.text,
-          'fcmToken': fcmToken ?? "",
-        }),
+      isLoginLoading.value = true;
+      String email = emailTEController.text;
+      String password = passwordTEController.text;
+      final Map<String, dynamic> requestBody = {
+        "email": email,
+        "password": password,
+      };
+      final response = await _networkConfig.ApiRequestHandler(
+        RequestMethod.POST,
+        Urls.login,
+        json.encode(requestBody),
+        is_auth: false,
       );
+      log("melon@gmail.com"); ////...
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        
-        // Check if the response has the expected structure
-        if (data['data'] != null && data['data']['token'] != null) {
-          final token = data['data']['token'];
-          final userInfo = data['data']['user']; // Assuming user info is returned
-          
-          if (kDebugMode) {
-            print("Login successful, token: $token");
-          }
-          
-          // Store user data
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          await pref.setString("token", token);
-          await pref.setBool("isLogin", true);
-          
-          // Store additional user info if available
-          if (userInfo != null) {
-            await pref.setString("userEmail", userInfo['email'] ?? '');
-            await pref.setString("userName", userInfo['name'] ?? '');
-          }
-          
-          Get.snackbar(
-            'Success',
-            'Login successful! Welcome back.',
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-          );
-          
-          // Clear form fields
-          _clearFields();
-          
-          // Navigate to main screen
-          // Get.offAllNamed('/home'); // or your main screen route
-          // Get.offAll(() => NavBarView());
-          
-        } else {
-          Get.snackbar(
-            'Error',
-            'Invalid response from server',
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-          );
-        }
-      } else if (response.statusCode == 401) {
-        Get.snackbar(
-          'Error',
-          'Invalid email or password',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      } else if (response.statusCode == 404) {
-        Get.snackbar(
-          'Error',
-          'Account not found. Please sign up first.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+      log("message 2 ${response.toString()}");
+
+      if (response != null && response['success'] == true) {
+        var localService = LocalService();
+        await localService.clearUserData();
+        await localService.setToken(response["data"]["token"]);
+        // await localService.setRole(response["data"]["role"]);
+        // String role = await localService.getRole();
+        AppSnackbar.show(message: "Login Successful", isSuccess: true);
+        return true;
       } else {
-        final errorData = jsonDecode(response.body);
-        Get.snackbar(
-          'Error',
-          errorData['message'] ?? 'Login failed. Please try again.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        AppSnackbar.show(message: response['message'], isSuccess: false);
+        return false;
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Network error. Please check your connection.',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      if (kDebugMode) {
-        print('Login error: $e');
-      }
+      AppSnackbar.show(message: "Failed To Login $e", isSuccess: false);
+      return false;
     } finally {
-      isLoading.value = false;
+      isLoginLoading.value = false;
     }
   }
 
@@ -207,11 +153,11 @@ class LoginController extends GetxController {
   Future<void> handleGoogleSignIn() async {
     try {
       isLoading.value = true;
-      
+
       // TODO: Implement actual Google Sign In logic here
       // For now, simulating the process
       await Future.delayed(Duration(seconds: 2));
-      
+
       Get.snackbar(
         'Info',
         'Google Sign In coming soon!',
@@ -219,7 +165,6 @@ class LoginController extends GetxController {
         backgroundColor: Colors.blue,
         colorText: Colors.white,
       );
-      
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -253,7 +198,7 @@ class LoginController extends GetxController {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       await pref.clear(); // Clear all stored data
-      
+
       Get.snackbar(
         'Success',
         'Logged out successfully',
@@ -261,10 +206,9 @@ class LoginController extends GetxController {
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
-      
+
       // Navigate to login screen
       // Get.offAllNamed('/login');
-      
     } catch (e) {
       if (kDebugMode) {
         print('Logout error: $e');

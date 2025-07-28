@@ -9,7 +9,11 @@ import 'package:prettyrini/feature/auth/screen/otp_very_screen.dart';
 import 'package:prettyrini/feature/auth/screen/sign_up_screen.dart';
 import 'package:prettyrini/feature/dashboard/ui/dashboard.dart';
 import 'package:prettyrini/feature/diagnosis/ui/camera_screen.dart';
+import 'package:prettyrini/feature/forum/ui/forum_screen_ui.dart';
+import 'package:prettyrini/feature/news/ui/tips_ui.dart';
 import 'package:prettyrini/feature/post/ui/post_ui.dart';
+import 'package:prettyrini/feature/profile/ui/profile_screen.dart';
+import 'package:prettyrini/feature/sales_board/ui/sales_board_ui.dart';
 import 'package:prettyrini/feature/shop/ui/shop_screen.dart';
 import 'package:prettyrini/route/route.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,15 +53,19 @@ class MyApp extends StatelessWidget {
       builder: (context, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Foot Fitness',
-        getPages: AppRoute.routes,
-        initialRoute: AppRoute.splashScreen,
-        builder: EasyLoading.init(),
+        // getPages: AppRoute.routes,
+        // initialRoute: AppRoute.splashScreen,
+        // builder: EasyLoading.init(),
         // home: LoginScreen(),
-        // home: SignUpScreen(),
+        //   home: SignUpScreen(),
         // home: OtpVeryScreen(),h
         // home: EmailVerification(),
-        //   home: ShopScreen(),
-      //  home: CameraScreen(),
+        home: ShopScreen(),
+        //  home: CameraScreen(),
+        // home: ProfileScreen(),
+        //   home: NewsUi(),
+        // home: ForumScreen(),
+        // home: SalesBoardScreen(),
       ),
     );
   }

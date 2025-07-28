@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prettyrini/core/global_widegts/custom_text.dart';
+import 'package:prettyrini/core/global_widegts/loading_screen.dart';
 import 'package:prettyrini/feature/auth/controller/signup_controller.dart';
 import 'package:prettyrini/feature/auth/widget/custom_booton_widget.dart';
 import 'package:prettyrini/feature/auth/widget/text_field_widget.dart';
@@ -109,22 +110,22 @@ class SignUpScreen extends StatelessWidget {
               height: 5.h,
             ),
             Obx(() => CustomAuthField(
-              radiusValue2: 15,
-              radiusValue: 15,
-              obscureText: !controller.isPasswordVisible.value,
-              controller: controller.passwordTEController,
-              hintText: "Enter Password Here",
-              keyboardType: TextInputType.visiblePassword,
-              suffixIcon: IconButton(
-                icon: Icon(
-                  controller.isPasswordVisible.value
-                      ? Icons.visibility
-                      : Icons.visibility_off,
-                  color: AppColors.grayColor,
-                ),
-                onPressed: controller.togglePasswordVisibility,
-              ),
-            )),
+                  radiusValue2: 15,
+                  radiusValue: 15,
+                  obscureText: !controller.isPasswordVisible.value,
+                  controller: controller.passwordTEController,
+                  hintText: "Enter Password Here",
+                  keyboardType: TextInputType.visiblePassword,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      controller.isPasswordVisible.value
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: AppColors.grayColor,
+                    ),
+                    onPressed: controller.togglePasswordVisibility,
+                  ),
+                )),
             SizedBox(
               height: 5.h,
             ),
@@ -135,45 +136,38 @@ class SignUpScreen extends StatelessWidget {
               height: 5.h,
             ),
             Obx(() => CustomAuthField(
-              radiusValue2: 15,
-              radiusValue: 15,
-              obscureText: !controller.isConfirmPasswordVisible.value,
-              controller: controller.confirmPasswordTEController,
-              hintText: "Enter Confirm Password",
-              keyboardType: TextInputType.visiblePassword,
-              suffixIcon: IconButton(
-                icon: Icon(
-                  controller.isConfirmPasswordVisible.value
-                      ? Icons.visibility
-                      : Icons.visibility_off,
-                  color: AppColors.grayColor,
-                ),
-                onPressed: controller.toggleConfirmPasswordVisibility,
-              ),
-            )),
+                  radiusValue2: 15,
+                  radiusValue: 15,
+                  obscureText: !controller.isConfirmPasswordVisible.value,
+                  controller: controller.confirmPasswordTEController,
+                  hintText: "Enter Confirm Password",
+                  keyboardType: TextInputType.visiblePassword,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      controller.isConfirmPasswordVisible.value
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: AppColors.grayColor,
+                    ),
+                    onPressed: controller.toggleConfirmPasswordVisibility,
+                  ),
+                )),
             SizedBox(
               height: 20.h,
             ),
-            Obx(() => CustomButton(
-              onTap: controller.isLoading.value ? null : () {
-                controller.handleSignUp();
-              },
-              title: controller.isLoading.value
-                  ? SizedBox(
-                      width: 20.w,
-                      height: 20.h,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : Text(
+            Obx(() => controller.isSignInLoading.value
+                ? loading()
+                : CustomButton(
+                    onTap: () {
+                      controller.handleSignUp();
+                    },
+                    title: Text(
                       "Sign Up",
                       style: GoogleFonts.poppins(
                           fontSize: 16.sp, color: Colors.white),
                     ),
-              color: AppColors.primaryColor,
-            )),
+                    color: AppColors.primaryColor,
+                  )),
             SizedBox(
               height: 30.h,
             ),
