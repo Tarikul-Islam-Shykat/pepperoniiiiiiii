@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:prettyrini/core/controller/theme_controller.dart';
+import 'package:prettyrini/feature/auth/screen/otp_very_screen.dart';
 import 'package:prettyrini/feature/cart/ui/cart_ui.dart';
 import 'package:prettyrini/feature/shop/ui/shop_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,18 +47,18 @@ class MyApp extends StatelessWidget {
         // initialRoute: AppRoute.splashScreen,
         // builder: EasyLoading.init(),
         // home: LoginScreen(),
-        //   home: SignUpScreen(),
-        // home: OtpVeryScreen(),h
+        // home: SignUpScreen(),
+        home: OtpVeryScreen(),
         // home: EmailVerification(),
         // home: ShopScreen(),
         // home: HomeScreen(),
-        //  home: CameraScreen(),
+        // home: CameraScreen(),
         // home: ProfileScreen(),
-        //  home: NewsUi(),
+        // home: NewsUi(),
         // home: ForumScreen(),
         // home: SalesBoardScreen(),
-        //    home: ImageSelectionScreen(),
-        home: CartScreen(),
+        // home: ImageSelectionScreen(),
+        // home: CartScreen(),
       ),
     );
   }
