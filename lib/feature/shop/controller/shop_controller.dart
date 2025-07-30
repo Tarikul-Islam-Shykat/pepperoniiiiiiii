@@ -139,8 +139,8 @@ class ProductController extends GetxController {
         //     products.where((p) => p.isTopSelling).toList();
         // newProducts.value = products.where((p) => p.isNewProduct).toList();
 
-        AppSnackbar.show(
-            message: "Products loaded successfully", isSuccess: true);
+        // AppSnackbar.show(
+        //     message: "Products loaded successfully", isSuccess: true);
         return true;
       } else {
         AppSnackbar.show(

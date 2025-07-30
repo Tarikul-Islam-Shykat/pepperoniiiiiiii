@@ -1,4 +1,4 @@
-package com.example.prettyrini
+package com.pepperoniiiiiiii.app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -6,7 +6,7 @@ import 'package:prettyrini/core/const/app_colors.dart';
 Widget loading({double value = 30}) {
   return Center(
     child: LoadingAnimationWidget.staggeredDotsWave(
-      color: Colors.black, // required for gradient to apply
+      color: AppColors.primaryColor, // required for gradient to apply
       size: value.h,
     ),
   );

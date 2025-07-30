@@ -3,18 +3,12 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:prettyrini/core/controller/theme_controller.dart';
-import 'package:prettyrini/feature/auth/screen/email_verification.dart';
-import 'package:prettyrini/feature/auth/screen/login_screen.dart';
-import 'package:prettyrini/feature/auth/screen/otp_very_screen.dart';
-import 'package:prettyrini/feature/auth/screen/sign_up_screen.dart';
-import 'package:prettyrini/feature/cart/ui/cart_ui.dart';
-import 'package:prettyrini/feature/dashboard/ui/dashboard.dart';
+import 'package:prettyrini/feature/chat/ui/coach_view.dart';
+import 'package:prettyrini/feature/chat_v2/controller/chats_controller.dart';
+import 'package:prettyrini/feature/chat_v2/view/chat_list.dart';
+import 'package:prettyrini/feature/chat_v2/view/chat_screen.dart';
 import 'package:prettyrini/feature/diagnosis_v2/ui/diagnosis_image_selection.dart';
-import 'package:prettyrini/feature/forum/ui/forum_screen_ui.dart';
-import 'package:prettyrini/feature/news/ui/tips_ui.dart';
-import 'package:prettyrini/feature/profile/ui/profile_screen.dart';
-import 'package:prettyrini/feature/sales_board/ui/sales_board_ui.dart';
-import 'package:prettyrini/feature/shop/ui/shop_screen.dart';
+import 'package:prettyrini/route/route.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/const/app_colors.dart';
 
@@ -44,6 +38,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeController themeController = Get.find<ThemeController>();
+    // final ChatController chatController = Get.put(ChatController());
 
     return ScreenUtilInit(
       designSize: const Size(360, 640),
@@ -51,10 +46,10 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Foot Fitness',
-        // getPages: AppRoute.routes,
-        // initialRoute: AppRoute.splashScreen,
-        // builder: EasyLoading.init(),
+        title: 'pepperoniiiiiiii',
+        getPages: AppRoute.routes,
+        initialRoute: AppRoute.splashScreen,
+        builder: EasyLoading.init(),
         // home: LoginScreen(),
         //   home: SignUpScreen(),
         // home: OtpVeryScreen(),
@@ -66,8 +61,16 @@ class MyApp extends StatelessWidget {
         // home: NewsUi(),
         //home: ForumScreen(),
         //home: SalesBoardScreen(),
-        home: ImageSelectionScreen(),
+        //  home: ImageSelectionScreen(),
         // home: CartScreen(),
+        //home: CoachView(),
+        //home: UsersChatList(),
+        // home: ChatScreen(
+        //   receiverId: "",
+        //   name: "logan",
+        //   imageUrl:
+        //       "https://images.unsplash.com/photo-1633332755192-727a05c4013d?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHx8MA%3D%3D",
+        // ),
       ),
     );
   }

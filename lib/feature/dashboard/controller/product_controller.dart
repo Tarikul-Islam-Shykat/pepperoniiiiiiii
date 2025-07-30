@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:prettyrini/core/global_widegts/app_snackbar.dart';
 import 'package:prettyrini/core/network_caller/endpoints.dart';
 import 'package:prettyrini/core/network_caller/network_config.dart';
+import 'package:prettyrini/core/services_class/local/user_info.dart';
 import 'package:prettyrini/feature/dashboard/model/new_item_model.dart';
 import 'package:prettyrini/feature/dashboard/model/user_profile_model.dart';
 import 'package:prettyrini/feature/dashboard/model/weather_data_model.dart';
@@ -22,6 +23,19 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     loadData();
+    loadUserInfo();
+  }
+
+  var name = ''.obs;
+  var image = ''.obs;
+
+  Future<void> loadUserInfo() async {
+    final LocalService localService = LocalService();
+    final savedName = await localService.getName();
+    final savedImage = await localService.getImagePath();
+    log("loadUserInfo $savedImage - $savedName");
+    name.value = savedName;
+    image.value = savedImage;
   }
 
   Future<void> loadData() async {
@@ -107,8 +121,8 @@ class HomeController extends GetxController {
           _healthCards.value = cards;
 
           log("Successfully loaded News");
-          AppSnackbar.show(
-              message: "News loaded successfully", isSuccess: true);
+          // AppSnackbar.show(
+          //     message: "News loaded successfully", isSuccess: true);
         } else {
           log("No data found in response");
           AppSnackbar.show(message: "No News found", isSuccess: false);

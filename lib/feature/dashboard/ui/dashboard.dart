@@ -88,7 +88,7 @@ class HomeScreen extends StatelessWidget {
         CircleAvatar(
           radius: 24.r,
           backgroundImage: NetworkImage(
-            controller.userProfile.value?.imageUrl ??
+            controller.image.value ??
                 'https://randomuser.me/api/portraits/women/1.jpg',
           ),
         ),
@@ -98,7 +98,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             smallText(text: 'Good Morning', color: Colors.grey),
             normalText(
-              text: controller.userProfile.value?.name ?? 'Kathryn Murphy',
+              text: controller.name.value ?? 'Kathryn Murphy',
               fontWeight: FontWeight.w600,
             ),
           ],

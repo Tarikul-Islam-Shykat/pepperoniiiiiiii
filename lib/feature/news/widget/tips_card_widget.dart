@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:prettyrini/core/const/app_colors.dart';
 import 'package:prettyrini/feature/news/controller/tips_controller.dart';
 import 'package:prettyrini/feature/news/data/health_card.dart';
+import 'package:prettyrini/feature/news/ui/news_details_page.dart'; // Import your details page
 
 class TipsCardWidget extends StatelessWidget {
   final HealthCard card;
@@ -14,6 +15,14 @@ class TipsCardWidget extends StatelessWidget {
     required this.card,
     required this.controller,
   }) : super(key: key);
+
+  void _navigateToDetails() {
+    Get.to(
+      () => NewsDetailsPage(card: card),
+      transition: Transition.fadeIn,
+      duration: const Duration(milliseconds: 300),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,40 +118,7 @@ class TipsCardWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Type Badge
-                    // Container(
-                    //   padding: const EdgeInsets.symmetric(
-                    //       horizontal: 8, vertical: 4),
-                    //   decoration: BoxDecoration(
-                    //     color: Colors.white.withOpacity(0.2),
-                    //     borderRadius: BorderRadius.circular(12),
-                    //     border: Border.all(
-                    //       color: Colors.white.withOpacity(0.3),
-                    //     ),
-                    //   ),
-                    //   child: Row(
-                    //     mainAxisSize: MainAxisSize.min,
-                    //     children: [
-                    //       Icon(
-                    //         controller.getTypeIcon(card.type),
-                    //         size: 14,
-                    //         color: Colors.white,
-                    //       ),
-                    //       const SizedBox(width: 4),
-                    //       Text(
-                    //         card.type.name.capitalize!,
-                    //         style: const TextStyle(
-                    //           color: Colors.white,
-                    //           fontSize: 12,
-                    //           fontWeight: FontWeight.w500,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                     const SizedBox(height: 12),
-
-                    // Title
                     Text(
                       card.title,
                       style: const TextStyle(
@@ -179,13 +155,13 @@ class TipsCardWidget extends StatelessWidget {
               ),
             ),
 
-            // Tap Detection
+            // Tap Detection - Updated to navigate to details
             Positioned.fill(
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
-                  onTap: () {},
+                  onTap: _navigateToDetails, // Navigate to details page
                   child: Container(),
                 ),
               ),

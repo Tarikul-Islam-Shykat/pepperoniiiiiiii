@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:prettyrini/core/global_widegts/app_snackbar.dart';
 import 'package:prettyrini/core/network_caller/network_config.dart';
 import 'package:prettyrini/core/services_class/local/user_info.dart';
+import 'package:prettyrini/feature/bottom_nav/ui/tech_bottom_nav.dart';
+import 'package:prettyrini/feature/chat_v2/controller/chats_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/network_caller/endpoints.dart';
@@ -133,6 +135,9 @@ class LoginController extends GetxController {
         var localService = LocalService();
         await localService.clearUserData();
         await localService.setToken(response["data"]["token"]);
+        await getUserData();
+        //  final ChatController chatController = Get.put(ChatController());
+        Get.to(UserBottomNavFloating());
         // await localService.setRole(response["data"]["role"]);
         // String role = await localService.getRole();
         AppSnackbar.show(message: "Login Successful", isSuccess: true);
@@ -147,6 +152,42 @@ class LoginController extends GetxController {
     } finally {
       isLoginLoading.value = false;
     }
+  }
+
+  Future<bool> getUserData() async {
+    try {
+      final response = await _networkConfig.ApiRequestHandler(
+        RequestMethod.GET,
+        Urls.getProfile,
+        json.encode({}),
+        is_auth: true,
+      );
+      log("melon@gmail.com"); ////...
+
+      log("getUserData 2 ${response.toString()}");
+
+      if (response != null && response['success'] == true) {
+        final data = response['data'];
+        final id = data['id'];
+        final fullName = data['fullName'];
+        final email = data['email'];
+        final image = data['image'];
+        var localService = LocalService();
+        log("getUserData 2 ${response.toString()} - $fullName - $email - $image");
+
+        await localService.setUserId(id);
+        await localService.setName(fullName);
+        await localService.setEmail(email);
+        await localService.setImagePath(image);
+        return true;
+      } else {
+        AppSnackbar.show(message: response['message'], isSuccess: false);
+        return false;
+      }
+    } catch (e) {
+      AppSnackbar.show(message: "Failed To Login $e", isSuccess: false);
+      return false;
+    } finally {}
   }
 
   // Handle Google Sign In

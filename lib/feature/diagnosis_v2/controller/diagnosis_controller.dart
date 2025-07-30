@@ -11,6 +11,7 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:prettyrini/feature/diagnosis_v2/ui/diagnosis_result_screen.dart';
 
 class DiagnosisController extends GetxController {
   final ImagePicker _picker = ImagePicker();
@@ -61,13 +62,13 @@ class DiagnosisController extends GetxController {
     }
   }
 
-  // Diagnose the selected image
+  // Add this to your diagnoseImage method in DiagnosisController
+
   Future<void> diagnoseImage() async {
     if (selectedImage.value == null) {
       errorMessage.value = 'Please select an image first';
       return;
     }
-    log("message 1");
 
     try {
       isLoading.value = true;
@@ -75,26 +76,69 @@ class DiagnosisController extends GetxController {
 
       var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
       request.files.add(
-        await http.MultipartFile.fromPath('file', selectedImage.value!.path),
+        await http.MultipartFile.fromPath('image', selectedImage.value!.path),
       );
-      log("message 2");
 
       var response = await request.send();
       var responseData = await response.stream.bytesToString();
 
-      log("message ${response.statusCode} ${json.decode(responseData)}");
+      log("Status Code: ${response.statusCode}");
+      log("Raw Response: $responseData");
+
       if (response.statusCode == 200) {
         var jsonData = json.decode(responseData);
+        log("Parsed JSON: $jsonData"); // Add this line
         diagnosisResult.value = DiagnosisResult.fromJson(jsonData);
+
+        // Debug the parsed result
+        log("Diseases: ${diagnosisResult.value?.diseases}");
+        log("Confidences: ${diagnosisResult.value?.confidences}");
+        Get.to(DiagnosisResultScreen());
       } else {
         errorMessage.value = 'API Error: ${response.statusCode}';
       }
     } catch (e) {
+      log("Error in diagnoseImage: $e"); // Add this line
       errorMessage.value = 'Network error: $e';
     } finally {
       isLoading.value = false;
     }
   }
+
+  // Diagnose the selected image
+  // Future<void> diagnoseImage() async {
+  //   if (selectedImage.value == null) {
+  //     errorMessage.value = 'Please select an image first';
+  //     return;
+  //   }
+  //   log("message 1");
+
+  //   try {
+  //     isLoading.value = true;
+  //     errorMessage.value = '';
+
+  //     var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
+  //     request.files.add(
+  //       await http.MultipartFile.fromPath('image', selectedImage.value!.path),
+  //     );
+  //     log("message 2");
+
+  //     var response = await request.send();
+  //     var responseData = await response.stream.bytesToString();
+
+  //     log("message ${response.statusCode} ${json.decode(responseData)}");
+  //     if (response.statusCode == 200) {
+  //       var jsonData = json.decode(responseData);
+  //       diagnosisResult.value = DiagnosisResult.fromJson(jsonData);
+  //     } else {
+  //       errorMessage.value = 'API Error: ${response.statusCode}';
+  //     }
+  //   } catch (e) {
+  //     errorMessage.value = 'Network error: $e';
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   // Reset all data
   void reset() {

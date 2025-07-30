@@ -15,7 +15,9 @@ class ForgetPasswordController extends GetxController {
   TextEditingController otpController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController rePasswordController = TextEditingController();
+  var isSendOtp = false.obs;
   void sendemail() async {
+    isSendOtp.value = true;
     if (emailController.text.isNotEmpty) {
       try {
         EasyLoading.show(status: "Processing...");
@@ -32,7 +34,8 @@ class ForgetPasswordController extends GetxController {
           var data = jsonDecode(response.body);
           if (data['success'] == true) {
             Get.snackbar("Success", "Email sent successfully");
-            Get.to(() => OtpVeryScreen());
+            Get.to(() => OtpVeryScreen(),
+                arguments: {"email": emailController.text});
           } else {
             Get.snackbar("Error", "Something went wrong");
           }
@@ -46,9 +49,13 @@ class ForgetPasswordController extends GetxController {
           print('Error: $e');
         }
       } finally {
+        isSendOtp.value = false;
+
         EasyLoading.dismiss();
       }
     } else {
+      isSendOtp.value = false;
+
       Get.snackbar("Error", "Please enter email");
     }
   }
@@ -64,7 +71,10 @@ class ForgetPasswordController extends GetxController {
         }
         if (kDebugMode) {
           print(
-            "Request Body: ${jsonEncode({'email': emailController.text.trim(), 'otp': int.parse(otpController.text.trim())})}",
+            "Request Body: ${jsonEncode({
+                  'email': emailController.text.trim(),
+                  'otp': int.parse(otpController.text.trim())
+                })}",
           );
         }
 
@@ -88,7 +98,7 @@ class ForgetPasswordController extends GetxController {
           var data = jsonDecode(response.body);
           if (data['success'] == true) {
             Get.snackbar("Success", "OTP verified successfully");
-            Get.to(() => ResetPassword());
+            Get.to(() => ResetPasswordScreen());
           } else {
             Get.snackbar("Error", data['message'] ?? "Invalid OTP");
           }

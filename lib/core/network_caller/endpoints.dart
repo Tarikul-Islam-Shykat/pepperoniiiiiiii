@@ -6,6 +6,10 @@ class Urls {
   static const String getNews = '$baseUrl/news?';
   static const String getProduct = '$baseUrl/product';
   static const String addToCart = '$baseUrl/cart';
+  static const String websocketUrl = "ws://10.0.10.97:1122";
+  static const String resetPassword = "$baseUrl/auth/reset-password";
+
+  static const String otpVerification = '$baseUrl/auth/verify-otp';
 
   static const String setupProfile = '$baseUrl/users/update-profile';
   static const String authentication = '$baseUrl/auth/verify-auth';

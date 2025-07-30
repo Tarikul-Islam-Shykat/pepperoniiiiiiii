@@ -6,6 +6,7 @@ import 'package:prettyrini/core/global_widegts/custom_text.dart';
 import 'package:prettyrini/core/global_widegts/loading_screen.dart';
 import 'package:prettyrini/feature/auth/controller/login_controller.dart';
 import 'package:prettyrini/feature/auth/controller/signup_controller.dart';
+import 'package:prettyrini/feature/auth/screen/sign_up_screen.dart';
 import 'package:prettyrini/feature/auth/widget/text_field_widget.dart';
 import 'package:prettyrini/feature/auth/widget/custom_booton_widget.dart';
 import '../../../core/const/app_colors.dart';
@@ -138,7 +139,12 @@ class LoginScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   normalText(text: "Don't have an account ? "),
-                  normalText(text: "Sign Up", color: AppColors.primaryColor),
+                  GestureDetector(
+                      onTap: () {
+                        Get.to(SignUpScreen());
+                      },
+                      child: normalText(
+                          text: "Sign Up", color: AppColors.primaryColor)),
                 ],
               )
             ],

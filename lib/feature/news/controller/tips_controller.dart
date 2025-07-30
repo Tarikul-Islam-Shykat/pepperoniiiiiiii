@@ -60,8 +60,8 @@ class NewsController extends GetxController {
           _filteredCards.value = cards;
 
           log("Successfully loaded News");
-          AppSnackbar.show(
-              message: "News loaded successfully", isSuccess: true);
+          // AppSnackbar.show(
+          //     message: "News loaded successfully", isSuccess: true);
         } else {
           log("No data found in response");
           AppSnackbar.show(message: "No News found", isSuccess: false);

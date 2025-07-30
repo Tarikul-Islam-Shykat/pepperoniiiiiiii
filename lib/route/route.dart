@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:prettyrini/feature/chat/ui/coach_view.dart';
 import '../feature/auth/screen/forget_pasword_screen.dart';
 import '../feature/auth/screen/login_screen.dart';
 import '../feature/auth/screen/reset_password.dart';
@@ -21,7 +22,7 @@ class AppRoute {
   static List<GetPage> routes = [
     GetPage(name: splashScreen, page: () => const SplashScreen()),
     GetPage(name: loginScreen, page: () => LoginScreen()),
-    GetPage(name: forgetScreen, page: () => const ForgetPasswordScreen()),
-    GetPage(name: resetPassScreen, page: () => ResetPassword()),
+    GetPage(name: forgetScreen, page: () => ForgetPasswordScreen()),
+    GetPage(name: resetPassScreen, page: () => ResetPasswordScreen()),
   ];
 }

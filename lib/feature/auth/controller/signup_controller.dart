@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:prettyrini/core/global_widegts/app_snackbar.dart';
 import 'package:prettyrini/core/network_caller/network_config.dart';
 import 'package:prettyrini/core/services_class/local/user_info.dart';
+import 'package:prettyrini/feature/auth/screen/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/network_caller/endpoints.dart';
@@ -142,6 +143,7 @@ class SignupController extends GetxController {
         // await localService.setRole(response["data"]["role"]);
         // String role = await localService.getRole();
         AppSnackbar.show(message: "Registration Successful", isSuccess: true);
+        Get.offAll(LoginScreen());
         return true;
       } else {
         AppSnackbar.show(message: response['message'], isSuccess: false);

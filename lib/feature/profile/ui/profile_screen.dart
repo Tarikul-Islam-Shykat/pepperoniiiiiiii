@@ -4,10 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prettyrini/core/const/image_path.dart';
+import 'package:prettyrini/feature/cart/ui/cart_ui.dart';
+import 'package:prettyrini/feature/forum/ui/forum_screen_ui.dart';
+import 'package:prettyrini/feature/forum_sales_board_tab/custom_tab.dart';
+import 'package:prettyrini/feature/news/ui/tips_ui.dart';
 import 'package:prettyrini/feature/profile/ui/change_passoword.dart';
 import 'package:prettyrini/feature/profile/ui/edit_profile_screen.dart';
 import 'package:prettyrini/feature/profile/widget/profile_image_text.dart';
 import 'package:prettyrini/feature/profile/widget/profile_list_tile.dart';
+import 'package:prettyrini/feature/sales_board/ui/sales_board_ui.dart';
 import 'package:prettyrini/route/route.dart';
 
 import '../../../core/const/app_colors.dart';
@@ -169,12 +174,25 @@ class ProfileScreen extends StatelessWidget {
                   profileListTile(
                     Icons.book,
                     'News',
-                    () {},
+                    () {
+                      Get.to(NewsUi());
+                    },
                   ),
                   profileListTile(
                     Icons.book,
                     'Forums',
-                    () {},
+                    () {
+                      // Get.to(SalesBoardScreen());
+                      // Get.to(ForumScreen());
+                      Get.to(ForumsSalesTab());
+                    },
+                  ),
+                  profileListTile(
+                    Icons.book,
+                    'Cart',
+                    () {
+                      Get.to(CartScreen());
+                    },
                   ),
                 ],
               ),

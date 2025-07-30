@@ -19,7 +19,7 @@
 
     
     <application
-        android:label="prettyrini"
+        android:label="pepperoniiiiiiii"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

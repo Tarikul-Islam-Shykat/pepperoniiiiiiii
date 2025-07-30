@@ -14,7 +14,7 @@ class DiagnosisResult {
   });
 
   factory DiagnosisResult.fromJson(Map<String, dynamic> json) {
-    List<String> labels = List<String>.from(json['labels']);
+    List<String> labels = List<String>.from(json['result'] ?? []);
 
     // Parse diseases and confidences from labels
     List<String> diseases = [];
