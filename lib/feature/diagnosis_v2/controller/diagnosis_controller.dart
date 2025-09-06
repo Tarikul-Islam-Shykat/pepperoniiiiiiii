@@ -1,17 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:prettyrini/feature/diagnosis_v2/model/diagnosis_result_model.dart';
-
-import 'dart:convert';
-import 'dart:io';
-import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'package:prettyrini/feature/diagnosis_v2/ui/diagnosis_result_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart'
+    show SharedPreferences;
 
 class DiagnosisController extends GetxController {
   final ImagePicker _picker = ImagePicker();
@@ -217,5 +214,129 @@ class DiagnosisController extends GetxController {
     if (confidence > 0.8) return 'High';
     if (confidence > 0.6) return 'Medium';
     return 'Low';
+  }
+
+  RxBool isSaving = false.obs;
+
+// Save diagnosis function
+  Future<void> saveDiagnosis() async {
+    if (diagnosisResult.value == null) {
+      errorMessage.value = 'No diagnosis result to save';
+      return;
+    }
+
+    try {
+      isSaving.value = true;
+      errorMessage.value = '';
+
+      // Get token from shared preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('token'); // Adjust key name as needed
+
+      if (token == null || token.isEmpty) {
+        errorMessage.value = 'Authentication token not found';
+        return;
+      }
+
+      // Prepare the diagnosis data
+      Map<String, dynamic> diagnosisData = {
+        "problemCount": diagnosisResult.value!.diseases.length,
+        "description": _generateDescriptions()
+      };
+
+      var request = http.MultipartRequest('POST',
+          Uri.parse('https://pepperoniiiiii.vercel.app/api/v1/ai-diagnosis'));
+
+      // Add headers
+      request.headers['Authorization'] = '$token';
+
+      // Add form data
+      request.fields['data'] = json.encode(diagnosisData);
+
+      // Add image file
+      if (selectedImage.value != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath('image', selectedImage.value!.path),
+        );
+      }
+
+      log("Sending diagnosis data: ${json.encode(diagnosisData)}");
+
+      var response = await request.send();
+      var responseData = await response.stream.bytesToString();
+
+      log("Save Status Code: ${response.statusCode}");
+      log("Save Response: $responseData");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Success
+        Get.snackbar(
+          'Success',
+          'Diagnosis saved successfully',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        errorMessage.value = 'Failed to save diagnosis: ${response.statusCode}';
+        Get.snackbar(
+          'Error',
+          'Failed to save diagnosis',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      log("Error saving diagnosis: $e");
+      errorMessage.value = 'Network error while saving: $e';
+      Get.snackbar(
+        'Error',
+        'Network error while saving',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isSaving.value = false;
+    }
+  }
+
+// Generate descriptions based on diagnosis results
+  List<String> _generateDescriptions() {
+    List<String> descriptions = [];
+
+    if (diagnosisResult.value == null) return descriptions;
+
+    for (int i = 0; i < diagnosisResult.value!.diseases.length; i++) {
+      String disease = diagnosisResult.value!.diseases[i];
+      double confidence = diagnosisResult.value!.confidences[i];
+
+      String description =
+          _generateDiseaseDescription(disease, confidence, i + 1);
+      descriptions.add(description);
+    }
+
+    return descriptions;
+  }
+
+// Generate individual disease description
+  String _generateDiseaseDescription(
+      String disease, double confidence, int rank) {
+    String confidenceLevel = confidence > 60
+        ? 'high'
+        : confidence > 40
+            ? 'moderate'
+            : 'low';
+    String rankText =
+        rank == 1 ? 'Primary diagnosis' : 'Alternative diagnosis #$rank';
+
+    switch (disease.toLowerCase()) {
+      case 'newcastle disease':
+        return '$rankText: Newcastle Disease detected with $confidenceLevel confidence (${confidence.toStringAsFixed(1)}%). Shows signs of respiratory distress and neurological symptoms.';
+      case 'infectious coryza':
+        return '$rankText: Infectious Coryza identified with $confidenceLevel confidence (${confidence.toStringAsFixed(1)}%). Exhibits nasal discharge and facial swelling symptoms.';
+      case 'coccidiosis':
+        return '$rankText: Coccidiosis diagnosed with $confidenceLevel confidence (${confidence.toStringAsFixed(1)}%). Shows signs of digestive issues and dehydration.';
+      default:
+        return '$rankText: $disease detected with $confidenceLevel confidence (${confidence.toStringAsFixed(1)}%). Requires veterinary consultation for proper treatment.';
+    }
   }
 }

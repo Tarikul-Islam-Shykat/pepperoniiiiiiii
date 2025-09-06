@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:convert';
-
 import 'package:prettyrini/feature/diagnosis_v2/controller/diagnosis_controller.dart';
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'dart:convert';
 
 class DiagnosisResultScreen extends StatelessWidget {
   final DiagnosisController controller = Get.find();
@@ -313,29 +308,30 @@ class DiagnosisResultScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              // Handle save or share functionality
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF2E7D32),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              elevation: 0,
-                            ),
-                            child: Text(
-                              'Save Result',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
+                        _buildSaveButton(context),
+                        // Expanded(
+                        //   child: ElevatedButton(
+                        //     onPressed: () {
+                        //       // Handle save or share functionality
+                        //     },
+                        //     style: ElevatedButton.styleFrom(
+                        //       backgroundColor: Color(0xFF2E7D32),
+                        //       shape: RoundedRectangleBorder(
+                        //         borderRadius: BorderRadius.circular(12),
+                        //       ),
+                        //       padding: EdgeInsets.symmetric(vertical: 16),
+                        //       elevation: 0,
+                        //     ),
+                        //     child: Text(
+                        //       'Save Result',
+                        //       style: TextStyle(
+                        //         color: Colors.white,
+                        //         fontSize: 16,
+                        //         fontWeight: FontWeight.w600,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
 
@@ -345,6 +341,43 @@ class DiagnosisResultScreen extends StatelessWidget {
               ),
             ],
           ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildSaveButton(BuildContext context) {
+    return Expanded(
+      child: Obx(() {
+        return ElevatedButton(
+          onPressed:
+              controller.isSaving.value ? null : controller.saveDiagnosis,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF2E7D32),
+            disabledBackgroundColor: Colors.grey[400],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: EdgeInsets.symmetric(vertical: 16),
+            elevation: 0,
+          ),
+          child: controller.isSaving.value
+              ? SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              : Text(
+                  'Save Result',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
         );
       }),
     );
